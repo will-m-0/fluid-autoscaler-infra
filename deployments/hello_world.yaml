@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-deployment
+  namespace: fluid-autoscaler
+  labels:
+    app: hello-world
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hello-world
+  template:
+    metadata: 
+      labels:
+        app: hello-world
+    spec: 
+      containers:
+      - name: hello-world
+        image: hashicorp/http-echo
+        args:
+          - "-text=fluid-autoscaler hello-world"
+          # http-echo defaults to port 5678. set explicitly for documentation.
+          - "-listen=:5678"
+        ports:
+        - containerPort: 5678
+        resources:
+          requests:
+            cpu: "50m"
+            memory: "32Mi"
+          limits:
+            cpu: "200m"
+            memory: "64Mi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-world-ClusterIP
+  namespace: fluid-autoscaler
+spec:
+  type: ClusterIP
+  selector:
+    app: hello-world
+  ports:
+    - name: http
+      port: 80          # The port the Service listens on inside the cluster.
+      targetPort: 5678  # The port the container actually serves on.
+                        # Decoupling these means the Service contract (port 80)
+                        # stays stable even if the container port changes.
