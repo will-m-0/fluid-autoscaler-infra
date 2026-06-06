@@ -35,7 +35,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: hello-world-ClusterIP
+  name: hello-world-clusterip
   namespace: fluid-autoscaler
 spec:
   type: ClusterIP
