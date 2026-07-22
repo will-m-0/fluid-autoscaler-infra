@@ -1,9 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: redis-deployment
+  name: redis
   namespace: fluid-autoscaler
 spec:
+  replicas: 1
   selector:
     matchLabels:
       app: redis
@@ -16,12 +17,18 @@ spec:
       - name: redis
         image: redis:8.8-trixie
         ports:
-        - containerPort: 6389
+        - containerPort: 6379
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            memory: 1Gi
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: redis-clusterip
+  name: redis
   namespace: fluid-autoscaler
   labels:
     app: redis
@@ -30,6 +37,6 @@ spec:
   selector:
     app: redis
   ports:
-    - name: http
+    - name: tcp-redis
       port: 6379
       targetPort: 6379
