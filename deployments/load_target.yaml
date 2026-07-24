@@ -17,7 +17,7 @@ spec:
     spec: 
       containers:
       - name: load-target
-        image: load-target:0.0.1-ubuntu
+        image: load-target:0.0.4-ubuntu
         imagePullPolicy: Never
         ports:
         - containerPort: 8080

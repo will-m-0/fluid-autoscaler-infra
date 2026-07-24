@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: redis-service-monitor
+  namespace: monitoring
+  labels:
+    release: prom-monitoring
+spec:
+  endpoints:
+  - interval: 10s
+    port: redis-metrics
+    path: /metrics
+  namespaceSelector:
+    matchNames:
+    - fluid-autoscaler
+  selector:
+    matchLabels:
+      app: "redis"
