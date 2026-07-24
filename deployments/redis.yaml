@@ -32,7 +32,7 @@ spec:
         app: redis
     spec:
       terminationGracePeriodSeconds: 10
-      containers: # add sidecar container for monitoring queue depth?
+      containers:
       - name: redis
         image: redis:8.8-trixie
         ports:
@@ -47,6 +47,23 @@ spec:
         volumeMounts:
         - name: redis-data
           mountPath: /data
+
+      - name: redis-exporter # sidecar to export redis metrics
+        image: oliver006/redis_exporter:v1.62.0
+        env:
+        - name: REDIS_ADDR
+          value: "redis://localhost:6379"
+        - name: REDIS_EXPORTER_CHECK_SINGLE_KEYS
+          value: "jobs"
+        ports:
+        - containerPort: 9121
+          name: redis-metrics
+        resources:
+          requests:
+            cpu: 25m
+            memory: 32Mi
+          limits:
+            memory: 64Mi
   volumeClaimTemplates:
     - metadata:
         name: redis-data
@@ -71,3 +88,6 @@ spec:
     - name: tcp-redis
       port: 6379
       targetPort: tcp-redis
+    - name: redis-metrics
+      port: 9121
+      targetPort: redis-metrics
