@@ -1,5 +1,8 @@
 CLUSTER_NAME 		  := fluid-cluster
 KIND_CONFIG  		  := kind-config.yaml
+
+LOAD_TEST_IMAGE       := load-test:0.1.0
+
 LOAD_TARGET_NAMESPACE := fluid-autoscaler
 MONITORING_NAMESPACE  := monitoring
 
@@ -27,3 +30,9 @@ status:
 	@echo ""
 	@echo "── Pods ─────────────────────────────────"
 	kubectl get pods -n $(LOAD_TARGET_NAMESPACE) -o wide
+
+load-test:
+	kubectl delete job load-test -n $(LOAD_TARGET_NAMESPACE) --ignore-not-found
+	kubectl apply -f jobs/load_test.yaml
+	kubectl wait --for=condition=Ready pod -l job-name=load-test -n $(LOAD_TARGET_NAMESPACE) --timeout=60s
+	kubectl logs -f job/load-test -n $(LOAD_TARGET_NAMESPACE)

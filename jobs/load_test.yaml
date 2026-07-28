@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: load-test
+  namespace: fluid-autoscaler
+  labels:
+    app: load-test
+spec:
+  # k6 exits non-zero when a threshold is breached. That is a result, not a
+  # flake, so don't retry it.
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app: load-test
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: k6
+        image: load-test:0.0.3
+        imagePullPolicy: Never
+        env:
+        - name: TARGET_URL
+          value: "http://load-target/work"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
