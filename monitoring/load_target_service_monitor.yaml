@@ -7,7 +7,7 @@ metadata:
     release: prom-monitoring
 spec:
   endpoints:
-  - interval: 30s
+  - interval: 10s
     port: http
     path: /metrics
   namespaceSelector:
