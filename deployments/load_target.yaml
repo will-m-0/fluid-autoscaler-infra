@@ -6,7 +6,6 @@ metadata:
   labels:
     app: load-target
 spec:
-  replicas: 3
   selector:
     matchLabels:
       app: load-target
@@ -17,23 +16,25 @@ spec:
     spec: 
       containers:
       - name: load-target
-        image: load-target:0.0.0-ubuntu
+        image: load-target:0.0.4-ubuntu
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
         resources:
           requests:
             cpu: "50m"
-            memory: "32Mi"
+            memory: "128Mi"
           limits:
-            cpu: "200m"
-            memory: "64Mi"
+            cpu: "100m"
+            memory: "256Mi"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: load-target-clusterip
+  name: load-target
   namespace: fluid-autoscaler
+  labels:
+    app: load-target
 spec:
   type: ClusterIP
   selector:
@@ -42,5 +43,3 @@ spec:
     - name: http
       port: 80          # The port the Service listens on inside the cluster.
       targetPort: 8080  # The port the container actually serves on.
-                        # Decoupling these means the Service contract (port 80)
-                        # stays stable even if the container port changes.
