@@ -5,8 +5,9 @@ LOAD_TEST_IMAGE       := load-test:0.1.0
 
 LOAD_TARGET_NAMESPACE := fluid-autoscaler
 MONITORING_NAMESPACE  := monitoring
+KEDA_NAMESPACE := keda
 
-.PHONY: up down recreate deploy status
+.PHONY: up down recreate deploy status load-test-image load-test
 
 up:
 	kind create cluster --name $(CLUSTER_NAME) --config $(KIND_CONFIG)
@@ -23,6 +24,11 @@ deploy:
 	helm repo update
 	helm upgrade --install --namespace $(MONITORING_NAMESPACE) prom-monitoring prom-community/kube-prometheus-stack
 	kubectl apply -f monitoring/
+
+keda-scaler:
+	helm repo add kedacore https://kedacore.github.io/charts
+	helm upgrade --install --namespace $(KEDA_NAMESPACE) keda kedacore/keda 
+	kubectl apply -f scaling/keda_scaler.yaml
 	
 status:
 	@echo "── Nodes ────────────────────────────────"
