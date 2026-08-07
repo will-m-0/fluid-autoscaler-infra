@@ -27,6 +27,9 @@ spec:
           limits:
             cpu: "100m"
             memory: "256Mi"
+        envFrom:
+          - configMapRef:
+              name: load-target-map
 ---
 apiVersion: v1
 kind: Service

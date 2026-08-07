@@ -19,6 +19,7 @@ recreate: down up
 
 deploy:
 	kubectl apply -f namespace.yaml
+	kubectl apply -f config/
 	kubectl apply -f deployments/
 	helm repo add prom-community https://prometheus-community.github.io/helm-charts
 	helm repo update
