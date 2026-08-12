@@ -17,7 +17,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: k6
-        image: load-test:0.0.3
+        image: load-test:0.0.5
         imagePullPolicy: Never
         env:
         - name: TARGET_URL
