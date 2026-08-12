@@ -1,0 +1,22 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: scaledobject
+  namespace: fluid-autoscaler
+spec:
+  scaleTargetRef: 
+    name: load-target-deployment
+  maxReplicaCount: 50
+  minReplicaCount: 1 # do not scale to 0 pods.
+  triggers:
+  - type: prometheus
+    metadata:
+      serverAddress: http://prometheus-operated.monitoring.svc.cluster.local:9090 # prom lives in monitoring namspace
+      query: sum(load_target_active_workers)
+      threshold: '7' # if 10 workers, this limits scaling to factor of 10/7=1.42 for each step.
+      activationThreshold: '1'
+  - type: redis
+    metadata:
+      address: redis.fluid-autoscaler.svc.cluster.local:6379 # redis lives in fluid-autoscaler namespace
+      listName: jobs
+      listLength: '5' # unlimited list length cap means no cap between scaling steps
