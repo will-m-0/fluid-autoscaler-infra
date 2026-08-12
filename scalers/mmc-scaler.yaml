@@ -1,0 +1,15 @@
+apiVersion: scaling.will-m-0.github.io/v1alpha1
+kind: MMcScaler
+metadata:
+  name: mmc-scaler
+  namespace: fluid-autoscaler
+spec:
+  drainTime: "55s"
+  maxReplicas: 10
+  minReplicas: 1
+  prometheusAddress: "http://prom-monitoring-kube-prome-prometheus.monitoring.svc.cluster.local:9090" # use localhost and port fwd pmoetheus for local controller dev
+  queueKey: "jobs"
+  redisAddress: "redis.fluid-autoscaler.svc.cluster.local:6379" # use localhost and port fwd redis for local controller dev
+  targetRef:
+    name: "load-target-deployment"
+  workersPerPod: 10
