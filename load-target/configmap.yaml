@@ -5,6 +5,6 @@ metadata:
   namespace: fluid-autoscaler
 data:
   WORKER_COUNT: "10"
-  QUEUE:KEY: "jobs"
+  QUEUE_KEY: "jobs"
   REDIS_ADDR: "redis:6379"
 immutable: true

@@ -10,13 +10,13 @@ spec:
     matchLabels:
       app: load-target
   template:
-    metadata: 
+    metadata:
       labels:
         app: load-target
-    spec: 
+    spec:
       containers:
       - name: load-target
-        image: load-target:0.0.4-ubuntu
+        image: load-target:0.0.6-ubuntu
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
@@ -30,19 +30,3 @@ spec:
         envFrom:
           - configMapRef:
               name: load-target-map
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: load-target
-  namespace: fluid-autoscaler
-  labels:
-    app: load-target
-spec:
-  type: ClusterIP
-  selector:
-    app: load-target
-  ports:
-    - name: http
-      port: 80          # The port the Service listens on inside the cluster.
-      targetPort: 8080  # The port the container actually serves on.
